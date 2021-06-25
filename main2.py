@@ -1,20 +1,15 @@
-#Facial landmarks with dlib, OpenCV, and PythonPython
-
-
 from imutils import face_utils
 import numpy as np
 import imutils
 import dlib
 import cv2
 
-
-import cv2
 def show_raw_detection(image, detector, predictor):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # detect faces in the grayscale image
+    #그레이스케일 영상에서 얼굴 검출
     rects = detector(gray, 1)
-    # loop over the face detections
+
     for (i, rect) in enumerate(rects):
         #determine the facial landmarks for the face region, then
         #convert the facial landmark (x, y)-coordinates to a NumPy
@@ -29,8 +24,16 @@ def show_raw_detection(image, detector, predictor):
         ##cv2.putText(image, "Face #{}".format(i + 1), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         # loop over the (x, y)-coordinates for the facial landmarks
         # and draw them on the image
+        
+        #점의 논문의 좌표와 일치한지 확인
+        num = 0
         for (x, y) in shape:
-            cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
+            print("X:" +str(x) +" Y" + str(y))
+            cv2.circle(image, (x, y), 1, (0, 255,0 ), -1)
+            #좌표의 번호를 입력하는 부분
+            #cv2.putText(image,str(num),(x-10,y-10),cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 255, 0), 1)
+
+            num= num+1
         # show the output image with the face detections + facial landmarks
         cv2.imshow("Output", image)
         cv2.waitKey(0)
@@ -69,6 +72,7 @@ def draw_individual_detections(image, detector, predictor):
         output = face_utils.visualize_facial_landmarks(image, shape)
         cv2.imshow("Image", output)
         cv2.waitKey(0)
+
 # initialize dlib's face detector (HOG-based) and then create
 # the facial landmark predictor
 detector = dlib.get_frontal_face_detector()
