@@ -1,3 +1,5 @@
+import math
+
 from imutils import face_utils
 import numpy as np
 import imutils
@@ -34,9 +36,25 @@ def show_raw_detection(image, detector, predictor):
             #cv2.putText(image,str(num),(x-10,y-10),cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 255, 0), 1)
 
             num= num+1
-        # show the output image with the face detections + facial landmarks
+
+        # 코등맨위부터 턱가운데까지 선긋기
+        cv2.line(image,shape[27],shape[8],(0,0,255),1)
+        euclidean_distance(shape[27],shape[21])
+        euclidean_distance(shape[27], shape[22])
         cv2.imshow("Output", image)
         cv2.waitKey(0)
+
+#두점 사이의 거리를 구하는 유클리드 공식
+def euclidean_distance(shape1,shape2):
+    x1 = shape1[0]
+    y1 = shape1[1]
+    x2 = shape2[0]
+    y2 = shape2[1]
+
+    result = math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2))
+    cv2.line(image, shape1, shape2, (255, 0, 0), 1)
+    print(result)
+    return result
 
 def draw_individual_detections(image, detector, predictor):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
