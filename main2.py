@@ -6,6 +6,29 @@ import imutils
 import dlib
 import cv2
 
+#A일때
+def testA(shape):
+    left = list()
+    right = list()
+
+    left.append(euclidean_distance(shape[19],shape[37])) , right.append(euclidean_distance(shape[24],shape[44]))
+    left.append(euclidean_distance(shape[20],shape[38])) , right.append(euclidean_distance(shape[23],shape[43]))
+    left.append(euclidean_distance(shape[21],shape[27])) , right.append(euclidean_distance(shape[22],shape[27]))
+    left.append(euclidean_distance(shape[37],shape[41])) , right.append(euclidean_distance(shape[44],shape[46]))
+    left.append(euclidean_distance(shape[38],shape[40])) , right.append(euclidean_distance(shape[43],shape[47]))
+    left.append(euclidean_distance(shape[17],shape[27])) , right.append(euclidean_distance(shape[26],shape[27]))
+    left.append(euclidean_distance(shape[19],shape[27])) , right.append(euclidean_distance(shape[24],shape[27]))
+    left.append(euclidean_distance(shape[36],shape[50])) , right.append(euclidean_distance(shape[45],shape[52]))
+    left.append(euclidean_distance(shape[0],shape[49])) , right.append(euclidean_distance(shape[16],shape[53]))
+    left.append(euclidean_distance(shape[0],shape[48])) , right.append(euclidean_distance(shape[16],shape[54]))
+    left.append(euclidean_distance(shape[3],shape[48])) , right.append(euclidean_distance(shape[13],shape[54]))
+    left.append(euclidean_distance(shape[59],shape[6])) , right.append(euclidean_distance(shape[55],shape[10]))
+
+    for left_distance,right_distance in zip(left , right):
+        print(str(left_distance)+" : " +str(right_distance))
+
+
+
 def show_raw_detection(image, detector, predictor):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -38,9 +61,8 @@ def show_raw_detection(image, detector, predictor):
             num= num+1
 
         # 코등맨위부터 턱가운데까지 선긋기
-        cv2.line(image,shape[27],shape[8],(0,0,255),1)
-        euclidean_distance(shape[27],shape[21])
-        euclidean_distance(shape[27], shape[22])
+        #cv2.line(image,shape[27],shape[8],(0,0,255),1)
+        testA(shape)
         cv2.imshow("Output", image)
         cv2.waitKey(0)
 
@@ -51,7 +73,7 @@ def euclidean_distance(shape1,shape2):
     x2 = shape2[0]
     y2 = shape2[1]
 
-    result = math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2))
+    result = round(math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2)),6)
     cv2.line(image, shape1, shape2, (255, 0, 0), 1)
     print(result)
     return result
@@ -97,8 +119,13 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 # load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/realdata1.jpg')
+image = cv2.imread('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/test.jpg')
 image = imutils.resize(image, width=500)
 show_raw_detection(image, detector, predictor)
 #draw_individual_detections(image, detector, predictor)
+
+
+
+
+
 
