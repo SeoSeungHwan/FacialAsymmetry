@@ -1,5 +1,6 @@
 import math
 
+import numpy
 from imutils import face_utils
 import numpy as np
 import imutils
@@ -7,26 +8,43 @@ import dlib
 import cv2
 
 #A일때
-def testA(shape):
+def test(shape):
+
+    testcaseA = [[19,37,24,44],
+                [20,38,23,43],
+                [21,27,22,27],
+                [37,41,44,46],
+                [38,40,43,47],
+                [17,27,26,27],
+                [19,27,24,27],
+                [36,50,45,52],
+                [0,49,16,53],
+                [0,48,16,54],
+                [3,48,13,54],
+                [59,6,55,10]]
+
     left = list()
     right = list()
+    distance = list()
 
-    left.append(euclidean_distance(shape[19],shape[37])) , right.append(euclidean_distance(shape[24],shape[44]))
-    left.append(euclidean_distance(shape[20],shape[38])) , right.append(euclidean_distance(shape[23],shape[43]))
-    left.append(euclidean_distance(shape[21],shape[27])) , right.append(euclidean_distance(shape[22],shape[27]))
-    left.append(euclidean_distance(shape[37],shape[41])) , right.append(euclidean_distance(shape[44],shape[46]))
-    left.append(euclidean_distance(shape[38],shape[40])) , right.append(euclidean_distance(shape[43],shape[47]))
-    left.append(euclidean_distance(shape[17],shape[27])) , right.append(euclidean_distance(shape[26],shape[27]))
-    left.append(euclidean_distance(shape[19],shape[27])) , right.append(euclidean_distance(shape[24],shape[27]))
-    left.append(euclidean_distance(shape[36],shape[50])) , right.append(euclidean_distance(shape[45],shape[52]))
-    left.append(euclidean_distance(shape[0],shape[49])) , right.append(euclidean_distance(shape[16],shape[53]))
-    left.append(euclidean_distance(shape[0],shape[48])) , right.append(euclidean_distance(shape[16],shape[54]))
-    left.append(euclidean_distance(shape[3],shape[48])) , right.append(euclidean_distance(shape[13],shape[54]))
-    left.append(euclidean_distance(shape[59],shape[6])) , right.append(euclidean_distance(shape[55],shape[10]))
+    #각 좌표의 거리를 구하고 선으로 그리기
+    for(x1,y1,x2,y2) in testcaseA:
+        left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
 
+    #각 선에 대한 거리를 list에 저장하고 거리 출력
     for left_distance,right_distance in zip(left , right):
-        print(str(left_distance)+" : " +str(right_distance))
+        d = abs(left_distance-right_distance)
+        distance.append(d)
+        print(str(left_distance)+" : " +str(right_distance) + " : " + str(d))
 
+    #거리의 평균 출력
+    print("평균 : " + str(numpy.mean(distance)))
+
+    #거리가 3이 넘는다면 넘는 곳의 선을 그리기
+    for d in distance:
+        if d > 3:
+            cv2.line(image, shape[testcaseA[distance.index(d)][0]], shape[testcaseA[distance.index(d)][1]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseA[distance.index(d)][2]], shape[testcaseA[distance.index(d)][3]], (0, 0, 255), 1)
 
 
 def show_raw_detection(image, detector, predictor):
@@ -61,8 +79,8 @@ def show_raw_detection(image, detector, predictor):
             num= num+1
 
         # 코등맨위부터 턱가운데까지 선긋기
-        #cv2.line(image,shape[27],shape[8],(0,0,255),1)
-        testA(shape)
+        #cv2.line(image,shape[27],shape[33],(0,0,255),1)
+        test(shape)
         cv2.imshow("Output", image)
         cv2.waitKey(0)
 
@@ -119,7 +137,7 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 # load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/test.jpg')
+image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/realdata2.jpg')
 image = imutils.resize(image, width=500)
 show_raw_detection(image, detector, predictor)
 #draw_individual_detections(image, detector, predictor)
