@@ -10,6 +10,7 @@ import cv2
 #A일때
 def test(shape):
 
+    #[x1,y1,x2,y2]
     testcaseA = [[19,37,24,44],
                 [20,38,23,43],
                 [21,27,22,27],
@@ -23,12 +24,76 @@ def test(shape):
                 [3,48,13,54],
                 [59,6,55,10]]
 
+    testcaseB = [[19, 41, 23, 47],
+                 [20, 40, 24, 46],
+                 [39, 31, 42, 35],
+                 [0, 31, 16, 35],
+                 [36, 50, 45, 52],
+                 [0, 49, 16, 53],
+                 [0, 48, 16, 54],
+                 [36, 48, 45, 54],
+                 [3, 48, 13, 54],
+                 [59, 5, 55, 11],
+                 [2, 48, 14, 54],
+                 [61, 67, 63, 65]]
+
+    testcaseC = [[31, 50, 35, 52],
+                 [32, 50, 34, 52],
+                 [2, 48, 14, 54],
+                 [3, 48, 13, 54],
+                 [4, 48, 12, 54],
+                 [5, 48, 11, 54],
+                 [6, 59, 10, 55],
+                 [7, 58, 9, 56],
+                 [48, 61, 54, 63],
+                 [5, 59, 55, 11]]
+
+    testcaseD = [[21, 27, 22, 27],
+                 [19, 27, 24, 27],
+                 [17, 27, 26, 27],
+                 [20, 38, 23, 43],
+                 [19, 37, 24, 44],
+                 [17, 36, 26, 45],
+                 [18, 36, 25, 45],
+                 [38, 40, 43, 47],
+                 [37, 41, 44, 46],
+                 [40, 31, 47, 35],
+                 [41, 48, 46, 54],
+                 [36, 48, 45, 54]]
+
+
+    #뭔가 이상함
+    testcaseE = [[21, 27, 22, 27],
+                 [19, 27, 24, 27],
+                 [17, 27, 26, 27],
+                 [20, 38, 23, 43],
+                 [19, 37, 24, 44],
+                 [17, 27, 26, 27],
+                 [18, 36, 26, 45],
+                 [0, 31, 16, 35],
+                 [0, 48, 16, 54],
+                 [40, 31, 47, 35],
+                 [41, 48, 46, 54],
+                 [36, 48, 45, 54]]
+
+    testcaseF = [[19, 37, 24, 44],
+                 [20, 38, 23, 43],
+                 [21, 27, 22, 27],
+                 [37, 41, 44, 46],
+                 [38, 40, 43, 47],
+                 [17, 27, 26, 27],
+                 [19, 27, 24, 27],
+                 [17, 31, 26, 35],
+                 [19, 31, 24, 35],
+                 [21, 31, 22, 35]]
+
+
     left = list()
     right = list()
     distance = list()
 
     #각 좌표의 거리를 구하고 선으로 그리기
-    for(x1,y1,x2,y2) in testcaseA:
+    for(x1,y1,x2,y2) in testcaseF:
         left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
 
     #각 선에 대한 거리를 list에 저장하고 거리 출력
@@ -43,8 +108,8 @@ def test(shape):
     #거리가 3이 넘는다면 넘는 곳의 선을 그리기
     for d in distance:
         if d > 3:
-            cv2.line(image, shape[testcaseA[distance.index(d)][0]], shape[testcaseA[distance.index(d)][1]], (0, 0, 255), 1)
-            cv2.line(image, shape[testcaseA[distance.index(d)][2]], shape[testcaseA[distance.index(d)][3]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseF[distance.index(d)][0]], shape[testcaseF[distance.index(d)][1]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseF[distance.index(d)][2]], shape[testcaseF[distance.index(d)][3]], (0, 0, 255), 1)
 
 
 def show_raw_detection(image, detector, predictor):
@@ -52,6 +117,10 @@ def show_raw_detection(image, detector, predictor):
 
     #그레이스케일 영상에서 얼굴 검출
     rects = detector(gray, 1)
+
+    #만약 얼굴이 검출되지 않았다면 rectangles[]이라면
+    if not rects:
+        print("얼굴이 검출되지 않았음")
 
     for (i, rect) in enumerate(rects):
         #determine the facial landmarks for the face region, then
@@ -81,6 +150,11 @@ def show_raw_detection(image, detector, predictor):
         # 코등맨위부터 턱가운데까지 선긋기
         #cv2.line(image,shape[27],shape[33],(0,0,255),1)
         test(shape)
+
+        #이미지 저장
+        cv2.imwrite("result.jpg",image)
+        
+        #이미지 출력
         cv2.imshow("Output", image)
         cv2.waitKey(0)
 
@@ -96,6 +170,20 @@ def euclidean_distance(shape1,shape2):
     print(result)
     return result
 
+
+
+# initialize dlib's face detector (HOG-based) and then create
+# the facial landmark predictor
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+
+# load the input image, resize it, and convert it to grayscale
+image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/realdata1.jpg')
+image = imutils.resize(image, width=500)
+show_raw_detection(image, detector, predictor)
+
+
+"""
 def draw_individual_detections(image, detector, predictor):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -130,18 +218,8 @@ def draw_individual_detections(image, detector, predictor):
         output = face_utils.visualize_facial_landmarks(image, shape)
         cv2.imshow("Image", output)
         cv2.waitKey(0)
-
-# initialize dlib's face detector (HOG-based) and then create
-# the facial landmark predictor
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-
-# load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/realdata2.jpg')
-image = imutils.resize(image, width=500)
-show_raw_detection(image, detector, predictor)
-#draw_individual_detections(image, detector, predictor)
-
+draw_individual_detections(image, detector, predictor)
+"""
 
 
 
