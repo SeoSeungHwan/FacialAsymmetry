@@ -152,7 +152,7 @@ def show_raw_detection(image, detector, predictor):
         test(shape)
 
         #이미지 저장
-        cv2.imwrite("result.jpg",image)
+        cv2.imwrite("./result/result.jpg",image)
         
         #이미지 출력
         cv2.imshow("Output", image)
@@ -166,7 +166,7 @@ def euclidean_distance(shape1,shape2):
     y2 = shape2[1]
 
     result = round(math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2)),6)
-    cv2.line(image, shape1, shape2, (255, 0, 0), 1)
+    cv2.line(image, (x1,y1), (x2,y2), (255, 0, 0), 1)
     print(result)
     return result
 
