@@ -3,6 +3,11 @@ from flask import Flask, g, make_response, jsonify, request, send_file
 import time
 
 # opencv , dlib, cmake 관련
+import io
+from base64 import encodebytes
+from PIL import Image
+from flask import jsonify
+
 import math
 import numpy
 from imutils import face_utils
@@ -121,7 +126,7 @@ def getImg_and_sendResult():
             distance = list()
 
             # 각 좌표의 거리를 구하고 선으로 그리기
-            for (x1, y1, x2, y2) in testcaseF:
+            for (x1, y1, x2, y2) in testcaseA:
                 left.append(euclidean_distance(shape[x1], shape[y1])), right.append(
                     euclidean_distance(shape[x2], shape[y2]))
 
@@ -138,12 +143,12 @@ def getImg_and_sendResult():
             for d in distance:
                 if d > 5:
                     cv2.line(image,
-                             (shape[testcaseF[distance.index(d)][0]][0], shape[testcaseF[distance.index(d)][0]][1]),
-                             (shape[testcaseF[distance.index(d)][1]][0], shape[testcaseF[distance.index(d)][1]][1]),
+                             (shape[testcaseA[distance.index(d)][0]][0], shape[testcaseA[distance.index(d)][0]][1]),
+                             (shape[testcaseA[distance.index(d)][1]][0], shape[testcaseA[distance.index(d)][1]][1]),
                              (0, 0, 255), 1)
                     cv2.line(image,
-                             (shape[testcaseF[distance.index(d)][2]][0], shape[testcaseF[distance.index(d)][2]][1]),
-                             (shape[testcaseF[distance.index(d)][3]][0], shape[testcaseF[distance.index(d)][3]][1]),
+                             (shape[testcaseA[distance.index(d)][2]][0], shape[testcaseA[distance.index(d)][2]][1]),
+                             (shape[testcaseA[distance.index(d)][3]][0], shape[testcaseA[distance.index(d)][3]][1]),
                              (0, 0, 255), 1)
 
         def show_raw_detection(image, detector, predictor, fname):
@@ -207,7 +212,21 @@ def getImg_and_sendResult():
         # -----------------------------------------------------예측 끝 ------------------------------------------------------------------
         show_raw_detection(image, detector, predictor, fname)
 
+        def get_response_image(image_path):
+            pil_img = Image.open(image_path, mode='r')  # reads the PIL image
+            byte_arr = io.BytesIO()
+            pil_img.save(byte_arr, format='PNG')  # convert the PIL image to byte array
+            encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')  # encode as base64
+            return encoded_img
+
         # 모델의 예측 결과를 폰으로 전송해줍니다.
         # return "전송성공!!!" # html이 아닌 텍스트 형태로 데이터 전송
-        return send_file("result/" + fname, mimetype="image/jpg")
+        image_path = "./Graduate/result/" + fname  # point to your image location
+        encoded_img = get_response_image(image_path)
+        my_message = 'here is my message'  # create your message as per your need
+        response = {'status': 'Success', 'message': my_message, 'imageBytes': encoded_img}
+        return jsonify(response)
+
+
+
 
