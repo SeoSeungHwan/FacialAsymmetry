@@ -10,106 +10,19 @@ import cv2
 #A일때
 def test(shape):
 
-    #[x1,y1,x2,y2]
-    testcaseA = [[19,37,24,44],
-                [20,38,23,43],
-                [21,27,22,27],
-                [37,41,44,46],
-                [38,40,43,47],
-                [17,27,26,27],
-                [19,27,24,27],
-                [36,50,45,52],
-                [0,49,16,53],
-                [0,48,16,54],
-                [3,48,13,54],
-                [59,6,55,10]]
-
-    testcaseB = [[19, 41, 23, 47],
-                 [20, 40, 24, 46],
-                 [39, 31, 42, 35],
-                 [0, 31, 16, 35],
-                 [36, 50, 45, 52],
-                 [0, 49, 16, 53],
-                 [0, 48, 16, 54],
-                 [36, 48, 45, 54],
-                 [3, 48, 13, 54],
-                 [59, 5, 55, 11],
-                 [2, 48, 14, 54],
-                 [61, 67, 63, 65]]
-
-    testcaseC = [[31, 50, 35, 52],
-                 [32, 50, 34, 52],
-                 [2, 48, 14, 54],
-                 [3, 48, 13, 54],
-                 [4, 48, 12, 54],
-                 [5, 48, 11, 54],
-                 [6, 59, 10, 55],
-                 [7, 58, 9, 56],
-                 [48, 61, 54, 63],
-                 [5, 59, 55, 11]]
-
-    testcaseD = [[21, 27, 22, 27],
-                 [19, 27, 24, 27],
-                 [17, 27, 26, 27],
-                 [20, 38, 23, 43],
-                 [19, 37, 24, 44],
-                 [17, 36, 26, 45],
-                 [18, 36, 25, 45],
-                 [38, 40, 43, 47],
-                 [37, 41, 44, 46],
-                 [40, 31, 47, 35],
-                 [41, 48, 46, 54],
-                 [36, 48, 45, 54]]
-
-
-    #뭔가 이상함
-    testcaseE = [[21, 27, 22, 27],
-                 [19, 27, 24, 27],
-                 [17, 27, 26, 27],
-                 [20, 38, 23, 43],
-                 [19, 37, 24, 44],
-                 [17, 27, 26, 27],
-                 [18, 36, 26, 45],
-                 [0, 31, 16, 35],
-                 [0, 48, 16, 54],
-                 [40, 31, 47, 35],
-                 [41, 48, 46, 54],
-                 [36, 48, 45, 54]]
-
-    testcaseF = [[19, 37, 24, 44],
-                 [20, 38, 23, 43],
-                 [21, 27, 22, 27],
-                 [37, 41, 44, 46],
-                 [38, 40, 43, 47],
-                 [17, 27, 26, 27],
-                 [19, 27, 24, 27],
-                 [17, 31, 26, 35],
-                 [19, 31, 24, 35],
-                 [21, 31, 22, 35]]
-
-
+    testcaseG = [[19,37],
+                 [20,57],
+                 [23,55]]
     left = list()
-    right = list()
-    distance = list()
+
 
     #각 좌표의 거리를 구하고 선으로 그리기
-    for(x1,y1,x2,y2) in testcaseC:
-        left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
+    for(x1,y1) in testcaseG:
+        left.append(euclidean_distance(shape[x1], shape[y1]))
 
     #각 선에 대한 거리를 list에 저장하고 거리 출력
-    for left_distance,right_distance in zip(left , right):
-        d = abs(left_distance-right_distance)
-        distance.append(d)
-        print(str(left_distance)+" : " +str(right_distance) + " : " + str(d))
-
-    #거리의 평균 출력
-    print("평균 : " + str(numpy.mean(distance)))
-
-    #거리가 3이 넘는다면 넘는 곳의 선을 그리기
-    for d in distance:
-        if d > 3:
-            cv2.line(image, shape[testcaseC[distance.index(d)][0]], shape[testcaseC[distance.index(d)][1]], (0, 0, 255), 1)
-            #cv2.line(image, shape[testcaseC[distance.index(d)][2]], shape[testcaseC[distance.index(d)][3]], (0, 0, 255), 1)
+    for left_distance in zip(left):
+        print("거리 : "+str(left_distance))
 
 
 def show_raw_detection(image, detector, predictor):
