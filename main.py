@@ -97,19 +97,23 @@ def test(shape):
         left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
 
     #각 선에 대한 거리를 list에 저장하고 거리 출력
+    i =1
     for left_distance,right_distance in zip(left , right):
-        d = abs(left_distance-right_distance)
+        if(left_distance>= right_distance):
+            d = right_distance/left_distance
+        else:
+            d = left_distance/right_distance
         distance.append(d)
-        print(str(left_distance)+" : " +str(right_distance) + " : " + str(d))
-
+        print(str(i) + ": "+str(left_distance)+" : " +str(right_distance) + " : " + str(d))
+        i = i+1
     #거리의 평균 출력
     print("평균 : " + str(numpy.mean(distance)))
 
     #거리가 3이 넘는다면 넘는 곳의 선을 그리기
     for d in distance:
-        if d > 3:
+        if d <0.9:
             cv2.line(image, shape[testcaseC[distance.index(d)][0]], shape[testcaseC[distance.index(d)][1]], (0, 0, 255), 1)
-            #cv2.line(image, shape[testcaseC[distance.index(d)][2]], shape[testcaseC[distance.index(d)][3]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseC[distance.index(d)][2]], shape[testcaseC[distance.index(d)][3]], (0, 0, 255), 1)
 
 
 def show_raw_detection(image, detector, predictor):
@@ -167,7 +171,7 @@ def euclidean_distance(shape1,shape2):
 
     result = round(math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2)),6)
     cv2.line(image, (x1,y1), (x2,y2), (255, 0, 0), 1)
-    print(result)
+    #print(result)
     return result
 
 
@@ -178,7 +182,7 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 # load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/odata.jpg')
+image = cv2.imread('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/O.jpg')
 image = imutils.resize(image, width=500)
 show_raw_detection(image, detector, predictor)
 
