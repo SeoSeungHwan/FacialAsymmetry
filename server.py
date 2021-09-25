@@ -1,8 +1,8 @@
-#flask 관련
+#flask 관련 
 from flask import Flask, g, make_response, jsonify, request , send_file
 import time
 
-#opencv , dlib, cmake 관련
+#opencv , dlib, cmake 관련 
 import io
 from base64 import encodebytes
 from PIL import Image
@@ -194,7 +194,7 @@ def getImg_and_sendResult1():
 				test(shape)
 
 				# 이미지 저장
-				cv2.imwrite("./Graduate/result/" + fname, image)
+				cv2.imwrite("./Graduate/static/result/" + fname, image)
 
 		# 두점 사이의 거리를 구하는 유클리드 공식
 		def euclidean_distance(shape1, shape2):
@@ -211,19 +211,10 @@ def getImg_and_sendResult1():
 		# -----------------------------------------------------예측 끝 ------------------------------------------------------------------
 		show_raw_detection(image, detector, predictor, fname)
 
-		def get_response_image(image_path):
-			pil_img = Image.open(image_path, mode='r')  # reads the PIL image
-			byte_arr = io.BytesIO()
-			pil_img.save(byte_arr, format='PNG')  # convert the PIL image to byte array
-			encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')  # encode as base64
-			return encoded_img
-
 		# 모델의 예측 결과를 폰으로 전송해줍니다.
 		# return "전송성공!!!" # html이 아닌 텍스트 형태로 데이터 전송
-		image_path = "./Graduate/result/" + fname  # point to your image location
-		encoded_img = get_response_image(image_path)
-		my_message = 'here is my message'  # create your message as per your need
-		response = {'status': 'Success', 'message': avg, 'imageBytes': encoded_img}
+		image_path = "http://220.69.208.242/static/result/" + fname  # point to your image location
+		response = {'status': 'Success', 'message': avg, 'imageBytes': image_path}
 		return jsonify(response)
 
 
