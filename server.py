@@ -89,7 +89,7 @@ def getImg_and_sendResult1():
 
 			# 거리의 평균 저장
 			global avg
-			avg = str(numpy.mean(distance))
+			avg = str(round(numpy.mean(distance)*100,3))
 
 			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
@@ -151,13 +151,12 @@ def getImg_and_sendResult1():
 			y2 = shape2[1]
 
 			result = round(math.sqrt(math.pow((x2 - x1), 2) + math.pow((y2 - y1), 2)), 6)
+			cv2.line(image, (x1, y1), (x2, y2), (255, 0, 0), 1)
 			#각 선에 숫자쌍 표시
 			if x1< x2:
-				cv2.putText(image, str(index), ((int)(x1+(x2-x1)/2), (int)(y1+(y2-y1)/2)), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+				cv2.putText(image, str(index), ((int)(x1+(x2-x1)/2), (int)(y1+(y2-y1)/2)), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 255), 1)
 			else:
-				cv2.putText(image, str(index), ((int)(x2 + (x1-x2) / 2), (int)(y1 + (y2 - y1) / 2)), cv2.FONT_HERSHEY_SIMPLEX,0.3, (255, 255, 255), 1)
-
-			cv2.line(image, (x1, y1), (x2, y2), (255, 0, 0), 1)
+				cv2.putText(image, str(index), ((int)(x2 + (x1-x2) / 2), (int)(y1 + (y2 - y1) / 2)), cv2.FONT_HERSHEY_SIMPLEX,0.25, (255, 0, 255), 1)
 			print(result)
 			return result
 
