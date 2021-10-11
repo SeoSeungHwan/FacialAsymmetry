@@ -93,8 +93,11 @@ def test(shape):
     distance = list()
 
     #각 좌표의 거리를 구하고 선으로 그리기
-    for(x1,y1,x2,y2) in testcaseC:
-        left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
+    index=1;
+    for(x1,y1,x2,y2) in testcaseA:
+        print("haha" + str(index))
+        left.append(euclidean_distance(shape[x1], shape[y1] ,index)), right.append(euclidean_distance(shape[x2], shape[y2],index))
+        index = index+1
 
     #각 선에 대한 거리를 list에 저장하고 거리 출력
     for left_distance,right_distance in zip(left , right):
@@ -166,6 +169,13 @@ def euclidean_distance(shape1,shape2):
     y2 = shape2[1]
 
     result = round(math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2)),6)
+    #각 선에 숫자쌍 표시
+    if x1< x2:
+        cv2.putText(image, str(index), ((int)(x1+(x2-x1)/2), (int)(y1+(y2-y1)/2)), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
+    else:
+        cv2.putText(image, str(index), ((int)(x2 + (x1-x2) / 2), (int)(y1 + (y2 - y1) / 2)), cv2.FONT_HERSHEY_SIMPLEX,0.3, (255, 255, 255), 1)
+
+    cv2.line(image, (x1,y1), (x2,y2), (255, 0, 0), 1)
     cv2.line(image, (x1,y1), (x2,y2), (255, 0, 0), 1)
     print(result)
     return result
