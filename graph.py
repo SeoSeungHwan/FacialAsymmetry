@@ -2,14 +2,15 @@ import math
 
 import numpy
 from imutils import face_utils
-import numpy as np
+import pandas as pd
 import imutils
 import dlib
 import cv2
-import json
+import os
 
+dis = list()
 #A일때
-def test(shape):
+def test(shape,image):
 
     #[x1,y1,x2,y2]
     testcaseA = [[19,37,24,44],
@@ -113,12 +114,21 @@ def test(shape):
             d = left_distance/right_distance
             distance_dictionary[i] = round(d*100,3)
         distance.append(d)
-        print(str(i) + ": "+str(left_distance)+" : " +str(right_distance) + " : " + str(d))
         i = i+1
 
     result_json['distance'] = distance_dictionary
     #거리의 평균 출력
-    print("평균 : " + str(numpy.mean(distance)))
+    global average
+    average = numpy.mean(distance)
+
+    global average_index
+    average_index = 0
+
+    average_dictionary = {}
+    average_dictionary[average_index] = average
+
+    df = pd.DataFrame(average_dictionary,index=[0])
+    df.to_excel('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/graph3.xlsx', sheet_name='new_name')
 
     #거리가 3이 넘는다면 넘는 곳의 선을 그리기
     for d in distance:
@@ -138,41 +148,21 @@ def show_raw_detection(image, detector, predictor):
         print("얼굴이 검출되지 않았음")
 
     for (i, rect) in enumerate(rects):
-        #determine the facial landmarks for the face region, then
-        #convert the facial landmark (x, y)-coordinates to a NumPy
-        # array
         shape = predictor(gray, rect)
         shape = face_utils.shape_to_np(shape)
-        # convert dlib's rectangle to a OpenCV-style bounding box
-        #[i.e., (x, y, w, h)], then draw the face bounding box
-        ##(x, y, w, h) = face_utils.rect_to_bb(rect)
-        ##cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        # show the face number
-        ##cv2.putText(image, "Face #{}".format(i + 1), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        # loop over the (x, y)-coordinates for the facial landmarks
-        # and draw them on the image
-        
         #점의 논문의 좌표와 일치한지 확인
         num = 0
         for (x, y) in shape:
-            print("X:" +str(x) +" Y" + str(y))
             cv2.circle(image, (x, y), 1, (0, 255,0 ), -1)
-            #좌표의 번호를 입력하는 부분
-            #cv2.putText(image,str(num),(x-10,y-10),cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 255, 0), 1)
 
             num= num+1
 
         # 코등맨위부터 턱가운데까지 선긋기
-        #cv2.line(image,shape[27],shape[33],(0,0,255),1)
-        test(shape)
+        test(shape,image)
 
         #이미지 저장
         cv2.imwrite("./result/result.jpg",image)
-        
-        #이미지 출력
-        print(result_json)
-        cv2.imshow("Output", image)
-        cv2.waitKey(0)
+
 
 #두점 사이의 거리를 구하는 유클리드 공식
 def euclidean_distance(shape1,shape2,index):
@@ -190,7 +180,6 @@ def euclidean_distance(shape1,shape2,index):
 
     cv2.line(image, (x1,y1), (x2,y2), (255, 0, 0), 1)
 
-    #print(result)
     return result
 
 
@@ -200,51 +189,19 @@ def euclidean_distance(shape1,shape2,index):
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
-# load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/testt.png')
-image = imutils.resize(image, width=1000)
-show_raw_detection(image, detector, predictor)
+path = 'C:/Users/seunghwan/Desktop/이전연구raw data/data2/close-eye'
+os.chdir(path)
+files = os.listdir(path)
+
+for file in files:
+    if '.jpg' in file:
+        print(file)
+        image = cv2.imread(file)
+        image = imutils.resize(image, width=500)
+        show_raw_detection(image, detector, predictor)
 
 
 
-
-"""
-def draw_individual_detections(image, detector, predictor):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # detect faces in the grayscale image
-    rects = detector(gray, 1)
-    # loop over the face detections
-    for (i, rect) in enumerate(rects):
-        # determine the facial landmarks for the face region, then
-        #convert the landmark (x, y)-coordinates to a NumPy array
-        shape = predictor(gray, rect)
-        shape = face_utils.shape_to_np(shape)
-        # loop over the face parts individually
-        for (name, (i, j)) in face_utils.FACIAL_LANDMARKS_IDXS.items():
-            # clone the original image so we can draw on it, then
-            # display the name of the face part on the image
-            clone = image.copy()
-            cv2.putText(clone, name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            # loop over the subset of facial landmarks, drawing the
-            # specific face part
-            for (x, y) in shape[i:j]:
-                cv2.circle(clone, (x, y), 1, (0, 0, 255), -1)
-            # extract the ROI of the face region as a separate image
-            (x, y, w, h) = cv2.boundingRect(np.array([shape[i:j]]))
-            roi = image[y:y + h, x:x + w]
-            roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
-
-            # show the particular face part
-            cv2.imshow("ROI", roi)
-            cv2.imshow("Image", clone)
-            cv2.waitKey(0)
-        # visualize all facial landmarks with a transparent overlay
-        output = face_utils.visualize_facial_landmarks(image, shape)
-        cv2.imshow("Image", output)
-        cv2.waitKey(0)
-draw_individual_detections(image, detector, predictor)
-"""
 
 
 
