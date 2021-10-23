@@ -6,7 +6,6 @@ import numpy as np
 import imutils
 import dlib
 import cv2
-import json
 
 #A일때
 def test(shape):
@@ -94,37 +93,23 @@ def test(shape):
     distance = list()
 
     #각 좌표의 거리를 구하고 선으로 그리기
-    index=1;
-    for(x1,y1,x2,y2) in testcaseA:
-        left.append(euclidean_distance(shape[x1], shape[y1] ,index)), right.append(euclidean_distance(shape[x2], shape[y2],index))
-        index = index+1
-
+    for(x1,y1,x2,y2) in testcaseC:
+        left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
 
     #각 선에 대한 거리를 list에 저장하고 거리 출력
-    i =1
-    global result_json
-    result_json = {}
-    distance_dictionary = {}
     for left_distance,right_distance in zip(left , right):
-        if left_distance>= right_distance:
-            d = right_distance/left_distance
-            distance_dictionary[i] = round(d*100,3)
-        else:
-            d = left_distance/right_distance
-            distance_dictionary[i] = round(d*100,3)
+        d = abs(left_distance-right_distance)
         distance.append(d)
-        print(str(i) + ": "+str(left_distance)+" : " +str(right_distance) + " : " + str(d))
-        i = i+1
+        print(str(left_distance)+" : " +str(right_distance) + " : " + str(d))
 
-    result_json['distance'] = distance_dictionary
     #거리의 평균 출력
     print("평균 : " + str(numpy.mean(distance)))
 
     #거리가 3이 넘는다면 넘는 곳의 선을 그리기
     for d in distance:
-        if d <0.9:
-            cv2.line(image, shape[testcaseA[distance.index(d)][0]], shape[testcaseA[distance.index(d)][1]], (0, 0, 255), 1)
-            cv2.line(image, shape[testcaseA[distance.index(d)][2]], shape[testcaseA[distance.index(d)][3]], (0, 0, 255), 1)
+        if d > 3:
+            cv2.line(image, shape[testcaseC[distance.index(d)][0]], shape[testcaseC[distance.index(d)][1]], (0, 0, 255), 1)
+            #cv2.line(image, shape[testcaseC[distance.index(d)][2]], shape[testcaseC[distance.index(d)][3]], (0, 0, 255), 1)
 
 
 def show_raw_detection(image, detector, predictor):
@@ -170,27 +155,19 @@ def show_raw_detection(image, detector, predictor):
         cv2.imwrite("./result/result.jpg",image)
         
         #이미지 출력
-        print(result_json)
         cv2.imshow("Output", image)
         cv2.waitKey(0)
 
 #두점 사이의 거리를 구하는 유클리드 공식
-def euclidean_distance(shape1,shape2,index):
+def euclidean_distance(shape1,shape2):
     x1 = shape1[0]
     y1 = shape1[1]
     x2 = shape2[0]
     y2 = shape2[1]
 
     result = round(math.sqrt(math.pow((x2-x1),2)+math.pow((y2-y1),2)),6)
-    #각 선에 숫자쌍 표시
-    if x1< x2:
-        cv2.putText(image, str(index), ((int)(x1+(x2-x1)/2), (int)(y1+(y2-y1)/2)), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1)
-    else:
-        cv2.putText(image, str(index), ((int)(x2 + (x1-x2) / 2), (int)(y1 + (y2 - y1) / 2)), cv2.FONT_HERSHEY_SIMPLEX,0.3, (255, 255, 255), 1)
-
     cv2.line(image, (x1,y1), (x2,y2), (255, 0, 0), 1)
-
-    #print(result)
+    print(result)
     return result
 
 
@@ -201,11 +178,9 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 # load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/testt.png')
-image = imutils.resize(image, width=1000)
+image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/odata.jpg')
+image = imutils.resize(image, width=500)
 show_raw_detection(image, detector, predictor)
-
-
 
 
 """

@@ -133,10 +133,7 @@ def getImg_and_sendResult1():
 
 			# 각 선에 대한 거리를 list에 저장하고 거리 출력
 			for left_distance, right_distance in zip(left, right):
-				if(left_distance >= right_distance):
-					d = right_distance/left_distance
-				else:
-					d = left_distance/right_distance
+				d = abs(left_distance - right_distance)
 				distance.append(d)
 				print(str(left_distance) + " : " + str(right_distance) + " : " + str(d))
 
@@ -146,7 +143,7 @@ def getImg_and_sendResult1():
 
 			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
-				if d <0.9:
+				if d > 5:
 					cv2.line(image,
 							 (shape[testcaseA[distance.index(d)][0]][0], shape[testcaseA[distance.index(d)][0]][1]),
 							 (shape[testcaseA[distance.index(d)][1]][0], shape[testcaseA[distance.index(d)][1]][1]),
@@ -271,10 +268,7 @@ def getImg_and_sendResult2():
 
 			# 각 선에 대한 거리를 list에 저장하고 거리 출력
 			for left_distance, right_distance in zip(left, right):
-				if(left_distance >= right_distance):
-					d = right_distance/left_distance
-				else:
-					d = left_distance/right_distance
+				d = abs(left_distance - right_distance)
 				distance.append(d)
 				print(str(left_distance) + " : " + str(right_distance) + " : " + str(d))
 
@@ -284,7 +278,7 @@ def getImg_and_sendResult2():
 
 			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
-				if d <0.9:
+				if d > 5:
 					cv2.line(image,
 							 (shape[testcaseB[distance.index(d)][0]][0], shape[testcaseB[distance.index(d)][0]][1]),
 							 (shape[testcaseB[distance.index(d)][1]][0], shape[testcaseB[distance.index(d)][1]][1]),
@@ -407,10 +401,7 @@ def getImg_and_sendResult3():
 
 			# 각 선에 대한 거리를 list에 저장하고 거리 출력
 			for left_distance, right_distance in zip(left, right):
-				if(left_distance >= right_distance):
-					d = right_distance/left_distance
-				else:
-					d = left_distance/right_distance
+				d = abs(left_distance - right_distance)
 				distance.append(d)
 				print(str(left_distance) + " : " + str(right_distance) + " : " + str(d))
 
@@ -420,7 +411,7 @@ def getImg_and_sendResult3():
 
 			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
-				if d <0.9:
+				if d > 5:
 					cv2.line(image,
 							 (shape[testcaseC[distance.index(d)][0]][0], shape[testcaseC[distance.index(d)][0]][1]),
 							 (shape[testcaseC[distance.index(d)][1]][0], shape[testcaseC[distance.index(d)][1]][1]),
@@ -544,10 +535,7 @@ def getImg_and_sendResult4():
 
 			# 각 선에 대한 거리를 list에 저장하고 거리 출력
 			for left_distance, right_distance in zip(left, right):
-				if(left_distance >= right_distance):
-					d = right_distance/left_distance
-				else:
-					d = left_distance/right_distance
+				d = abs(left_distance - right_distance)
 				distance.append(d)
 				print(str(left_distance) + " : " + str(right_distance) + " : " + str(d))
 
@@ -557,7 +545,7 @@ def getImg_and_sendResult4():
 
 			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
-				if d < 0.9:
+				if d > 5:
 					cv2.line(image,
 							 (shape[testcaseD[distance.index(d)][0]][0], shape[testcaseD[distance.index(d)][0]][1]),
 							 (shape[testcaseD[distance.index(d)][1]][0], shape[testcaseD[distance.index(d)][1]][1]),
@@ -683,10 +671,7 @@ def getImg_and_sendResult5():
 
 			# 각 선에 대한 거리를 list에 저장하고 거리 출력
 			for left_distance, right_distance in zip(left, right):
-				if(left_distance >= right_distance):
-					d = right_distance/left_distance
-				else:
-					d = left_distance/right_distance
+				d = abs(left_distance - right_distance)
 				distance.append(d)
 				print(str(left_distance) + " : " + str(right_distance) + " : " + str(d))
 
@@ -696,7 +681,7 @@ def getImg_and_sendResult5():
 
 			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
-				if d <0.9:
+				if d > 5:
 					cv2.line(image,
 							 (shape[testcaseE[distance.index(d)][0]][0], shape[testcaseE[distance.index(d)][0]][1]),
 							 (shape[testcaseE[distance.index(d)][1]][0], shape[testcaseE[distance.index(d)][1]][1]),
@@ -818,10 +803,7 @@ def getImg_and_sendResult6():
 
 			# 각 선에 대한 거리를 list에 저장하고 거리 출력
 			for left_distance, right_distance in zip(left, right):
-				if(left_distance >= right_distance):
-					d = right_distance/left_distance
-				else:
-					d = left_distance/right_distance
+				d = abs(left_distance - right_distance)
 				distance.append(d)
 				print(str(left_distance) + " : " + str(right_distance) + " : " + str(d))
 
@@ -829,9 +811,9 @@ def getImg_and_sendResult6():
 			global avg
 			avg = str(numpy.mean(distance))
 
-			# 차이가 0.9가 넘는다면 넘는 곳의 선을 그리기
+			# 거리가 3이 넘는다면 넘는 곳의 선을 그리기
 			for d in distance:
-				if d < 0.9:
+				if d > 5:
 					cv2.line(image,
 							 (shape[testcaseF[distance.index(d)][0]][0], shape[testcaseF[distance.index(d)][0]][1]),
 							 (shape[testcaseF[distance.index(d)][1]][0], shape[testcaseF[distance.index(d)][1]][1]),
@@ -910,3 +892,6 @@ def getImg_and_sendResult6():
 		my_message = 'here is my message'  # create your message as per your need
 		response = {'status': 'Success', 'message': avg, 'imageBytes': encoded_img}
 		return jsonify(response)
+
+
+
