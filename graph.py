@@ -1,14 +1,12 @@
 import math
 
-import numpy
 from imutils import face_utils
 import pandas as pd
 import imutils
 import dlib
 import cv2
-import os
 
-dis = list()
+all_distance=[]
 #A일때
 def test(shape,image):
 
@@ -96,7 +94,7 @@ def test(shape,image):
 
     #각 좌표의 거리를 구하고 선으로 그리기
     index=1;
-    for(x1,y1,x2,y2) in testcaseA:
+    for(x1,y1,x2,y2) in testcaseF:
         left.append(euclidean_distance(shape[x1], shape[y1] ,index)), right.append(euclidean_distance(shape[x2], shape[y2],index))
         index = index+1
 
@@ -105,36 +103,20 @@ def test(shape,image):
     i =1
     global result_json
     result_json = {}
-    distance_dictionary = {}
     for left_distance,right_distance in zip(left , right):
         if left_distance>= right_distance:
-            d = right_distance/left_distance
-            distance_dictionary[i] = round(d*100,3)
+            d = round(right_distance/left_distance,6)
         else:
-            d = left_distance/right_distance
-            distance_dictionary[i] = round(d*100,3)
+            d = round(left_distance/right_distance,6)
         distance.append(d)
         i = i+1
-
-    result_json['distance'] = distance_dictionary
-    #거리의 평균 출력
-    global average
-    average = numpy.mean(distance)
-
-    global average_index
-    average_index = 0
-
-    average_dictionary = {}
-    average_dictionary[average_index] = average
-
-    df = pd.DataFrame(average_dictionary,index=[0])
-    df.to_excel('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/graph3.xlsx', sheet_name='new_name')
-
+    global all_distance
+    all_distance.append(distance)
     #거리가 3이 넘는다면 넘는 곳의 선을 그리기
     for d in distance:
         if d <0.9:
-            cv2.line(image, shape[testcaseA[distance.index(d)][0]], shape[testcaseA[distance.index(d)][1]], (0, 0, 255), 1)
-            cv2.line(image, shape[testcaseA[distance.index(d)][2]], shape[testcaseA[distance.index(d)][3]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseF[distance.index(d)][0]], shape[testcaseF[distance.index(d)][1]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseF[distance.index(d)][2]], shape[testcaseF[distance.index(d)][3]], (0, 0, 255), 1)
 
 
 def show_raw_detection(image, detector, predictor):
@@ -160,8 +142,6 @@ def show_raw_detection(image, detector, predictor):
         # 코등맨위부터 턱가운데까지 선긋기
         test(shape,image)
 
-        #이미지 저장
-        cv2.imwrite("./result/result.jpg",image)
 
 
 #두점 사이의 거리를 구하는 유클리드 공식
@@ -189,19 +169,17 @@ def euclidean_distance(shape1,shape2,index):
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
-path = 'C:/Users/seunghwan/Desktop/이전연구raw data/data2/close-eye'
-os.chdir(path)
-files = os.listdir(path)
+# load the input image, resize it, and convert it to grayscale
+for i in range(1,81):
+    file = 'C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/dataset/' + str(i) + '-6.jpg'
+    print(file)
+    image = cv2.imread(file)
+    image = imutils.resize(image, width=500)
+    show_raw_detection(image, detector, predictor)
 
-for file in files:
-    if '.jpg' in file:
-        print(file)
-        image = cv2.imread(file)
-        image = imutils.resize(image, width=500)
-        show_raw_detection(image, detector, predictor)
-
-
-
+print(all_distance)
+df = pd.DataFrame.from_records(all_distance)
+df.to_excel('test.xlsx')
 
 
 

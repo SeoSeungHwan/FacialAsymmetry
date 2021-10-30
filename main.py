@@ -11,6 +11,7 @@ import cv2
 def test(shape):
 
     #[x1,y1,x2,y2]
+    #REST
     testcaseA = [[19,37,24,44],
                 [20,38,23,43],
                 [21,27,22,27],
@@ -24,6 +25,7 @@ def test(shape):
                 [3,48,13,54],
                 [59,6,55,10]]
 
+    #E
     testcaseB = [[19, 41, 23, 47],
                  [20, 40, 24, 46],
                  [39, 31, 42, 35],
@@ -37,6 +39,7 @@ def test(shape):
                  [2, 48, 14, 54],
                  [61, 67, 63, 65]]
 
+    #O
     testcaseC = [[31, 50, 35, 52],
                  [32, 50, 34, 52],
                  [2, 48, 14, 54],
@@ -48,6 +51,7 @@ def test(shape):
                  [48, 61, 54, 63],
                  [5, 59, 55, 11]]
 
+    #눈감기
     testcaseD = [[21, 27, 22, 27],
                  [19, 27, 24, 27],
                  [17, 27, 26, 27],
@@ -63,6 +67,7 @@ def test(shape):
 
 
     #뭔가 이상함
+    #눈 쌔개
     testcaseE = [[21, 27, 22, 27],
                  [19, 27, 24, 27],
                  [17, 27, 26, 27],
@@ -76,6 +81,7 @@ def test(shape):
                  [41, 48, 46, 54],
                  [36, 48, 45, 54]]
 
+    #눈산을 찌푸리다
     testcaseF = [[19, 37, 24, 44],
                  [20, 38, 23, 43],
                  [21, 27, 22, 27],
@@ -93,14 +99,18 @@ def test(shape):
     distance = list()
 
     #각 좌표의 거리를 구하고 선으로 그리기
-    for(x1,y1,x2,y2) in testcaseC:
+    for(x1,y1,x2,y2) in testcaseF:
         left.append(euclidean_distance(shape[x1], shape[y1])), right.append(euclidean_distance(shape[x2], shape[y2]))
 
     #각 선에 대한 거리를 list에 저장하고 거리 출력
     for left_distance,right_distance in zip(left , right):
-        d = abs(left_distance-right_distance)
-        distance.append(d)
-        print(str(left_distance)+" : " +str(right_distance) + " : " + str(d))
+        if left_distance >= right_distance:
+            d = right_distance / left_distance
+            distance.append(round(d * 100, 4))
+        else:
+            d = left_distance / right_distance
+            distance.append(round(d * 100, 4))
+        print(str(left_distance)+" : " +str(right_distance) + " : " + str(round(d * 100, 4)))
 
     #거리의 평균 출력
     print("평균 : " + str(numpy.mean(distance)))
@@ -108,7 +118,7 @@ def test(shape):
     #거리가 3이 넘는다면 넘는 곳의 선을 그리기
     for d in distance:
         if d > 3:
-            cv2.line(image, shape[testcaseC[distance.index(d)][0]], shape[testcaseC[distance.index(d)][1]], (0, 0, 255), 1)
+            cv2.line(image, shape[testcaseF[distance.index(d)][0]], shape[testcaseF[distance.index(d)][1]], (0, 0, 255), 1)
             #cv2.line(image, shape[testcaseC[distance.index(d)][2]], shape[testcaseC[distance.index(d)][3]], (0, 0, 255), 1)
 
 
@@ -178,7 +188,7 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 # load the input image, resize it, and convert it to grayscale
-image = cv2.imread('C:/Users/tmdgh/PycharmProjects/FacialAsymmetry/odata.jpg')
+image = cv2.imread('C:/Users/seunghwan/PycharmProjects/FacialAsymmetry/7-6.jpg')
 image = imutils.resize(image, width=500)
 show_raw_detection(image, detector, predictor)
 
